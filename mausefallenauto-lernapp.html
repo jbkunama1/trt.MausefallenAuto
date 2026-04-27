@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="de" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mausefallenauto Lern-App</title>
+  <link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700&f[]=cabinet-grotesk@500,700,800&display=swap" rel="stylesheet">
+  <style>
+    :root, [data-theme="light"] {
+      --text-xs: clamp(0.75rem, 0.7rem + 0.25vw, 0.875rem);
+      --text-sm: clamp(0.875rem, 0.8rem + 0.35vw, 1rem);
+      --text-base: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
+      --text-lg: clamp(1.125rem, 1rem + 0.75vw, 1.5rem);
+      --text-xl: clamp(1.5rem, 1.2rem + 1.25vw, 2.25rem);
+      --text-2xl: clamp(2rem, 1.2rem + 2.5vw, 3.5rem);
+      --space-1: .25rem; --space-2: .5rem; --space-3: .75rem; --space-4: 1rem; --space-5: 1.25rem; --space-6: 1.5rem; --space-8: 2rem; --space-10: 2.5rem; --space-12: 3rem; --space-16: 4rem;
+      --color-bg:#f7f6f2; --color-surface:#f9f8f5; --color-surface-2:#fbfbf9; --color-surface-offset:#edeae5; --color-border:#d4d1ca;
+      --color-text:#28251d; --color-text-muted:#66645f; --color-text-faint:#96938d; --color-primary:#01696f; --color-primary-hover:#0c4e54;
+      --color-blue:#006494; --color-gold:#d19900; --color-success:#437a22; --color-warning:#964219; --color-error:#a12c7b;
+      --radius-sm:.375rem; --radius-md:.5rem; --radius-lg:.75rem; --radius-xl:1rem; --radius-full:9999px;
+      --shadow-sm:0 1px 2px rgba(0,0,0,.06); --shadow-md:0 8px 20px rgba(0,0,0,.08); --shadow-lg:0 18px 40px rgba(0,0,0,.12);
+      --font-body:'Satoshi', system-ui, sans-serif; --font-display:'Cabinet Grotesk', system-ui, sans-serif;
+    }
+    [data-theme="dark"] {
+      --color-bg:#171614; --color-surface:#1c1b19; --color-surface-2:#201f1d; --color-surface-offset:#2a2825; --color-border:#393836;
+      --color-text:#e5e2da; --color-text-muted:#b5b1a7; --color-text-faint:#8b877e; --color-primary:#4f98a3; --color-primary-hover:#6bb4bf;
+      --color-blue:#73addd; --color-gold:#f1c24f; --color-success:#8cc067; --color-warning:#d48c5f; --color-error:#d57cbc;
+      --shadow-sm:0 1px 2px rgba(0,0,0,.2); --shadow-md:0 8px 20px rgba(0,0,0,.28); --shadow-lg:0 18px 40px rgba(0,0,0,.4);
+    }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { margin:0; font-family:var(--font-body); font-size:var(--text-base); line-height:1.6; color:var(--color-text); background:linear-gradient(180deg,var(--color-bg),var(--color-surface)); }
+    img { max-width:100%; display:block; border-radius:var(--radius-lg); }
+    a { color:var(--color-primary); }
+    .skip-link{position:absolute;left:-9999px;top:auto}.skip-link:focus{left:1rem;top:1rem;background:var(--color-surface);padding:.5rem 1rem;z-index:999}
+    header { position:sticky; top:0; z-index:50; backdrop-filter: blur(14px); background:color-mix(in srgb, var(--color-bg) 82%, transparent); border-bottom:1px solid var(--color-border); }
+    .nav { max-width:1200px; margin:0 auto; padding:var(--space-3) var(--space-4); display:flex; align-items:center; justify-content:space-between; gap:var(--space-4); }
+    .brand { display:flex; align-items:center; gap:.75rem; text-decoration:none; color:inherit; font-weight:700; }
+    .brand svg { width:40px; height:40px; }
+    .nav-links { display:flex; flex-wrap:wrap; gap:.75rem; }
+    .nav-links a,.theme-btn { text-decoration:none; color:var(--color-text); background:var(--color-surface-2); border:1px solid var(--color-border); padding:.7rem .9rem; border-radius:999px; font-size:var(--text-sm); min-height:44px; display:inline-flex; align-items:center; }
+    .theme-btn { cursor:pointer; }
+    main { max-width:1200px; margin:0 auto; padding:var(--space-8) var(--space-4) var(--space-16); }
+    .hero { display:grid; grid-template-columns:1.3fr .9fr; gap:var(--space-8); align-items:center; padding:var(--space-10) 0 var(--space-8); }
+    .eyebrow { display:inline-flex; gap:.5rem; align-items:center; background:var(--color-surface-2); border:1px solid var(--color-border); border-radius:999px; padding:.4rem .75rem; font-size:var(--text-sm); }
+    h1,h2,h3 { font-family:var(--font-display); line-height:1.08; margin:0 0 .75rem; }
+    h1 { font-size:var(--text-2xl); }
+    h2 { font-size:var(--text-xl); margin-top:0; }
+    h3 { font-size:var(--text-lg); }
+    p { max-width:72ch; }
+    .lede { font-size:var(--text-lg); color:var(--color-text-muted); }
+    .hero-card,.card, .note, .timeline-step, .model-card { background:var(--color-surface); border:1px solid var(--color-border); border-radius:var(--radius-xl); box-shadow:var(--shadow-sm); }
+    .hero-card { padding:var(--space-6); }
+    .stats { display:grid; grid-template-columns:repeat(3,1fr); gap:var(--space-3); margin-top:var(--space-5); }
+    .stat { background:var(--color-surface-2); border:1px solid var(--color-border); padding:var(--space-4); border-radius:var(--radius-lg); }
+    .section { padding:var(--space-8) 0; }
+    .grid-2, .grid-3 { display:grid; gap:var(--space-4); }
+    .grid-2 { grid-template-columns:repeat(2,minmax(0,1fr)); }
+    .grid-3 { grid-template-columns:repeat(3,minmax(0,1fr)); }
+    .card, .model-card, .timeline-step, .note { padding:var(--space-5); }
+    .pill { display:inline-block; padding:.3rem .6rem; border-radius:999px; background:color-mix(in srgb, var(--color-primary) 12%, var(--color-surface)); color:var(--color-primary); font-size:var(--text-xs); font-weight:700; letter-spacing:.04em; text-transform:uppercase; }
+    ul { padding-left:1.2rem; }
+    .table-wrap { overflow:auto; border-radius:var(--radius-xl); border:1px solid var(--color-border); }
+    table { width:100%; border-collapse:collapse; background:var(--color-surface); }
+    th, td { padding:1rem; text-align:left; border-bottom:1px solid var(--color-border); vertical-align:top; }
+    th { background:var(--color-surface-2); font-size:var(--text-sm); }
+    .timeline { display:grid; gap:var(--space-4); }
+    .timeline-step { position:relative; }
+    .emoji { font-size:1.3rem; margin-right:.35rem; }
+    .footer { padding:var(--space-8) 0 var(--space-4); color:var(--color-text-muted); font-size:var(--text-sm); }
+    .gallery { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:var(--space-4); }
+    .model-card img { aspect-ratio: 16/10; object-fit:cover; }
+    .cta-row { display:flex; flex-wrap:wrap; gap:.75rem; margin-top:var(--space-5); }
+    .btn { display:inline-flex; align-items:center; justify-content:center; min-height:44px; padding:.85rem 1rem; border-radius:999px; text-decoration:none; font-weight:700; border:1px solid var(--color-border); }
+    .btn-primary { background:var(--color-primary); color:white; border-color:transparent; }
+    .btn-secondary { background:var(--color-surface-2); color:var(--color-text); }
+    details { background:var(--color-surface); border:1px solid var(--color-border); border-radius:var(--radius-lg); padding:1rem 1rem; }
+    summary { cursor:pointer; font-weight:700; }
+    @media (max-width: 900px){ .hero,.grid-2,.grid-3,.gallery,.stats{grid-template-columns:1fr;} .nav{align-items:flex-start;flex-direction:column;} }
+  </style>
+</head>
+<body>
+<a class="skip-link" href="#content">Zum Inhalt springen</a>
+<header>
+  <div class="nav">
+    <a class="brand" href="#top" aria-label="Startseite Mausefallenauto Lern-App">
+      <svg viewBox="0 0 64 64" fill="none" aria-hidden="true">
+        <rect x="8" y="28" width="32" height="10" rx="5" stroke="currentColor" stroke-width="4"/>
+        <circle cx="18" cy="46" r="7" stroke="currentColor" stroke-width="4"/>
+        <circle cx="46" cy="46" r="7" stroke="currentColor" stroke-width="4"/>
+        <path d="M39 31 L54 17" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
+        <path d="M49 12 C58 12, 58 26, 49 26" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
+      </svg>
+      <span>Mausefallenauto Lern-App</span>
+    </a>
+    <nav class="nav-links" aria-label="Hauptnavigation">
+      <a href="#idee">Idee</a>
+      <a href="#bau">Bauanleitung</a>
+      <a href="#unterricht">Unterricht</a>
+      <a href="#druck">3D-Modelle</a>
+      <a href="#notebooklm">NotebookLM</a>
+      <button class="theme-btn" data-theme-toggle aria-label="Farbschema wechseln">🌙</button>
+    </nav>
+  </div>
+</header>
+<main id="content">
+  <section class="hero" id="top">
+    <div>
+      <span class="eyebrow">🐭 Technikprojekt · 🚗 Mousetrap Car · 🏫 Realschule BW</span>
+      <h1>Modernes Mausefallenauto-Projekt für den Technikunterricht</h1>
+      <p class="lede">Die Lern-App verbindet Baupraxis, Konstruktion, Optimierung und Wettbewerb in einem klar strukturierten Unterrichtsvorhaben für die Sekundarstufe I.</p>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="#bau">🔧 Zur Bauanleitung</a>
+        <a class="btn btn-secondary" href="#unterricht">📘 Didaktische Planung</a>
+      </div>
+      <div class="stats">
+        <div class="stat"><strong>OPITEC-Orientierung</strong><br><span>12+ Jahre, 10–12 Stunden Arbeitszeit</span></div>
+        <div class="stat"><strong>Reichweite</strong><br><span>ca. 16 m beim OPITEC-Modell</span></div>
+        <div class="stat"><strong>Typische Tätigkeiten</strong><br><span>Bohren, Sägen, Feilen, Schleifen, Leimen</span></div>
+      </div>
+    </div>
+    <aside class="hero-card">
+      <span class="pill">✨ Unterrichtsnutzen</span>
+      <h3>Warum das Thema stark ist</h3>
+      <ul>
+        <li>Energieumwandlung wird direkt sichtbar: Federenergie wird in Bewegung umgesetzt.</li>
+        <li>Konstruktion und Erprobung greifen sauber ineinander.</li>
+        <li>Das Projekt eignet sich sehr gut für Tuning, Vergleich und faire Wettbewerbe.</li>
+        <li>Analoge Werkstattarbeit lässt sich mit 3D-Druck und Dokumentation kombinieren.</li>
+      </ul>
+      <p><strong>Didaktischer Fokus:</strong> planen, herstellen, testen, optimieren, reflektieren.</p>
+    </aside>
+  </section>
+
+  <section class="section" id="idee">
+    <h2><span class="emoji">💡</span>Projektidee</h2>
+    <div class="grid-2">
+      <div class="card">
+        <h3>Technische Grundidee</h3>
+        <p>Ein Mausefallenauto nutzt die gespannte Feder einer handelsüblichen Mausefalle als Energiespeicher. Über einen Hebelarm und eine Schnur wird die Drehbewegung zeitverzögert auf die Antriebsachse übertragen. Dadurch entsteht ein hervorragend beobachtbares Zusammenspiel aus Hebel, Übersetzung, Reibung, Spurtreue und Leichtbau.</p>
+      </div>
+      <div class="card">
+        <h3>Orientierung am Bausatz</h3>
+        <p>Das OPITEC-Mausefallenfahrzeug wird als Komplett-Werkpackung mit Mausefalle und detailliertem Bauplan beschrieben. Hervorgehoben werden Lagerbuchsen, eine einstellbare Vorderachse, ein reduziertes Gewicht sowie Hinweise zum Tuning und zur Durchführung von Rennen.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="bau">
+    <h2><span class="emoji">🛠️</span>Bauanleitung für den Unterricht</h2>
+    <div class="note">
+      <p><strong>Sicherheit zuerst:</strong> Die Mausefalle darf nur unter Anleitung gespannt und montiert werden. Schutzbrille, ruhiger Arbeitsplatz, sichere Fixierung beim Bohren und ein klarer Umgang mit Werkzeugen sind Pflicht.</p>
+    </div>
+    <div class="timeline">
+      <div class="timeline-step"><span class="pill">1</span><h3>Planen und Bauteile prüfen</h3><p>Material sichten, Skizze lesen, Radgrößen und Achspositionen festlegen. Vor dem Bau mit den Lernenden klären: Soll das Fahrzeug eher möglichst weit fahren oder eine definierte Strecke möglichst schnell zurücklegen?</p></div>
+      <div class="timeline-step"><span class="pill">2</span><h3>Fahrgestell herstellen</h3><p>Grundplatte oder Leistenrahmen zusägen, Kanten schleifen und Bohrpunkte exakt anreißen. Ein gerades, leichtes und verwindungsarmes Chassis ist entscheidend für Spurtreue und geringe Verluste.</p></div>
+      <div class="timeline-step"><span class="pill">3</span><h3>Achsen und Lager ausrichten</h3><p>Achsen möglichst reibungsarm lagern, Lagerbuchsen sauber einsetzen und Vorderachse kontrollierbar ausrichten. Schon kleine Schiefstellungen führen zu seitlichem Wegdriften und Energieverlust.</p></div>
+      <div class="timeline-step"><span class="pill">4</span><h3>Räder montieren</h3><p>Große Hinterräder begünstigen weite Strecken, kleinere oder leichtere Varianten können je nach Zielsetzung Beschleunigungsvorteile bringen. Räder müssen rund laufen und mittig befestigt sein.</p></div>
+      <div class="timeline-step"><span class="pill">5</span><h3>Mausefalle befestigen</h3><p>Die Falle wird stabil auf dem Chassis montiert; beim OPITEC-Bausatz wird sie laut Anleitung nach Zeichnung auf das Fahrgestell gesetzt und die Bohrungen müssen fluchten. Die Lage der Falle beeinflusst Schwerpunkt und Krafteinleitung.</p></div>
+      <div class="timeline-step"><span class="pill">6</span><h3>Hebelarm verlängern</h3><p>Ein langer Hebelarm verlängert den Abwickelweg der Schnur und sorgt meist für längere, gleichmäßigere Kraftabgabe. Für Reichweitenmodelle ist das meist günstiger als ein sehr kurzer Arm mit starkem Anfangsimpuls.</p></div>
+      <div class="timeline-step"><span class="pill">7</span><h3>Schnur an der Antriebsachse führen</h3><p>Die Schnur wird sauber an der Achse oder einer Hülse aufgewickelt. Wichtig sind eine saubere Wickelrichtung, fester Sitz und genügend Abstand zu Kanten, damit nichts verklemmt.</p></div>
+      <div class="timeline-step"><span class="pill">8</span><h3>Testen, trimmen, optimieren</h3><p>Geradeauslauf testen, Reibung prüfen, Gewicht reduzieren, Radstand und Spur nachjustieren. Danach mit Messprotokollen arbeiten: Strecke, Zeit, Abweichung von der Ideallinie und Wirkung einzelner Änderungen dokumentieren.</p></div>
+    </div>
+  </section>
+
+  <section class="section" id="unterricht">
+    <h2><span class="emoji">📘</span>Didaktisch-methodische Aufbereitung</h2>
+    <div class="grid-2">
+      <div class="card">
+        <h3>Lernchancen</h3>
+        <ul>
+          <li>Konstruktionen planen und technische Zeichnungen lesen</li>
+          <li>Werkstoffe, Werkzeuge und Fertigungsverfahren sicher anwenden</li>
+          <li>Antrieb, Energie, Reibung und Übersetzung praktisch verstehen</li>
+          <li>Ergebnisse erproben, bewerten und verbessern</li>
+          <li>Technische Entscheidungen begründen und dokumentieren</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Passung zum Bildungsplan 2016 BW</h3>
+        <p>Für die Realschule Technik lässt sich das Vorhaben besonders gut im Inhaltsbereich <strong>Mobilität / Transport und Verkehr / Antriebssysteme</strong> verorten. Ergänzend passen Problemlösen, Konstruieren, Herstellen, Bewerten und nachhaltiges technisches Handeln als prozessbezogene Kompetenzen.</p>
+      </div>
+    </div>
+
+    <div class="table-wrap" style="margin-top:1.25rem;">
+      <table>
+        <thead>
+          <tr><th>Baustein</th><th>Unterrichtsidee</th><th>Methoden</th><th>Differenzierung</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Einstieg</td><td>Lehrkraft zeigt zwei Fahrzeuge: eins auf Reichweite, eins auf Tempo optimiert.</td><td>Impuls, Vermutungskarten, Think-Pair-Share</td><td>Hilfekarten mit Fachbegriffen; Expertenfrage zu Übersetzung</td></tr>
+          <tr><td>Planung</td><td>Skizze des Fahrzeugs mit Beschriftung von Achse, Rad, Hebel, Antriebsschnur.</td><td>Skizzieren, Partnerfeedback, Materialcheck</td><td>Vorlageblatt oder freie Konstruktionsskizze</td></tr>
+          <tr><td>Fertigung</td><td>Bau in Werkstattphasen mit klaren Qualitätsstopps.</td><td>Lerntheke, Demonstration, Werkstattführerschein</td><td>Pflicht- und Wahlaufgaben, vorbereitete Bohrschablonen</td></tr>
+          <tr><td>Erprobung</td><td>Messfahrten auf Teststrecke mit Protokollbogen.</td><td>Experimentieren, Messen, Beobachten</td><td>Einfacher Bogen oder erweitertes Messblatt mit Variablenvergleich</td></tr>
+          <tr><td>Optimierung</td><td>Eine Veränderung gezielt umsetzen und Wirkung begründen.</td><td>Design-Test-Improve-Zyklus</td><td>Basisziel: Geradeauslauf; erweitert: Reichweiten- oder Tempotuning</td></tr>
+          <tr><td>Reflexion</td><td>Rennen oder Technik-Challenge mit Auswertung.</td><td>Peer-Feedback, Gallery Walk, Kurzpräsentation</td><td>Reflexionssatzstarter, Experteninterview</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <details style="margin-top:1rem;"><summary>Bewertungsideen</summary><p>Geeignet sind eine Produktbewertung des Fahrzeugs, eine Prozessbewertung der Werkstattarbeit, ein Messprotokoll sowie eine kurze technische Reflexion. Sinnvolle Kriterien sind Maßgenauigkeit, Funktion, Sicherheit, Begründung von Optimierungen und Teamarbeit.</p></details>
+    <details style="margin-top:1rem;"><summary>Inklusive Gestaltung</summary><p>Arbeite mit Bildkarten, klaren Teilschritten, Werkzeugstationen, Partnerrollen und unterschiedlichen Anspruchsniveaus. Zusätzliche Hilfen können Bohrlehren, vormarkierte Bauteile, Satzstarter und vereinfachte Versuchsprotokolle sein.</p></details>
+  </section>
+
+  <section class="section" id="druck">
+    <h2><span class="emoji">🧩</span>3D-druckbare Modelle zur Inspiration</h2>
+    <p>Für ergänzende Bauteile oder Inspiration können Thingiverse-Modelle genutzt werden. Die STL-Dateien lädst du separat herunter; hier sind passende Ideen für die Unterrichtsplanung und spätere Bebilderung.</p>
+    <div class="gallery">
+      <article class="model-card">
+        <img src="https://picsum.photos/seed/mousetrapcar1/800/500" alt="Platzhalterbild für Thingiverse Mousetrap Car von Toni_Ravioli_" width="800" height="500" loading="lazy">
+        <h3>Thingiverse: Mouse Trap Car</h3>
+        <p>Modell von <strong>Toni_Ravioli_</strong>; laut Beschreibung wurde ein 3:1-Riemen- bzw. Rollenverhältnis genutzt, um längere Fahrstrecken zu erreichen.</p>
+        <p><a href="https://www.thingiverse.com/thing:2955372" target="_blank" rel="noopener noreferrer">Zum Modell ↗</a></p>
+      </article>
+      <article class="model-card">
+        <img src="https://picsum.photos/seed/mousetrapcar2/800/500" alt="Platzhalterbild für Thingiverse Mousetrap Car von devansic" width="800" height="500" loading="lazy">
+        <h3>Thingiverse: Mousetrap Car</h3>
+        <p>Modell von <strong>devansic</strong>; laut Beschreibung für unterschiedliche Altersstufen nutzbar und als klassisches Federkraftfahrzeug ausgelegt.</p>
+        <p><a href="https://www.thingiverse.com/thing:521446" target="_blank" rel="noopener noreferrer">Zum Modell ↗</a></p>
+      </article>
+      <article class="model-card">
+        <img src="https://picsum.photos/seed/mousetrapcar3/800/500" alt="Platzhalterbild für Thingiverse Custom Designed Mousetrap Car" width="800" height="500" loading="lazy">
+        <h3>Thingiverse: Custom Designed Mousetrap Car</h3>
+        <p>Modell von <strong>Pucehaddock</strong>; beschrieben als effizientes Eigenkonstrukt mit Lagern, 4-mm-Achse und Standard-Mausefalle.</p>
+        <p><a href="https://www.thingiverse.com/thing:6541031" target="_blank" rel="noopener noreferrer">Zum Modell ↗</a></p>
+      </article>
+    </div>
+    <div class="note" style="margin-top:1rem;">
+      <p><strong>Tipp für die Schule:</strong> 3D-Druck nicht als Vollersatz des Holzmodells einsetzen, sondern gezielt für Naben, Distanzhülsen, Felgenvarianten oder Schnurführungen. So bleibt der Schwerpunkt auf technischem Verstehen und Fertigen.</p>
+    </div>
+  </section>
+
+  <section class="section" id="material">
+    <h2><span class="emoji">📦</span>Material, Werkzeug, Organisation</h2>
+    <div class="grid-3">
+      <div class="card"><h3>Material</h3><ul><li>Mausefalle</li><li>Holzleisten oder Chassisplatte</li><li>Achsen, Lager, Räder</li><li>Schnur, Hebelarm, Kleinteile</li></ul></div>
+      <div class="card"><h3>Werkzeuge</h3><ul><li>Säge</li><li>Bohrer</li><li>Feile</li><li>Schleifpapier</li><li>Kleber</li><li>Lineal/Winkel</li></ul></div>
+      <div class="card"><h3>Organisation</h3><ul><li>Werkstattregeln sichtbar</li><li>Materialausgabe stationenweise</li><li>Zwischenkontrollen einplanen</li><li>Teststrecke mit Maßband vorbereiten</li></ul></div>
+    </div>
+  </section>
+
+  <section class="section" id="notebooklm">
+    <h2><span class="emoji">🧠</span>NotebookLM-Unterstützung</h2>
+    <div class="card">
+      <h3>Was zusätzlich vorbereitet wurde</h3>
+      <p>Zum Projekt gehört ein separates NotebookLM-Dokument mit Projektkontext, Zielgruppe, möglichen Rechercheaufträgen und einem direkt nutzbaren Prompt. Damit kannst du später Videos, Grafiken oder weitere Materialien in NotebookLM strukturiert ergänzen.</p>
+      <p>Außerdem ist eine README-Datei für GitHub vorbereitet, damit du das Projekt sauber dokumentieren und weiterentwickeln kannst.</p>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <p>Erstellt als schulgeeignete Lern-App für ein Technikprojekt zum Thema Mausefallenauto / Mousetrap Car.</p>
+  </footer>
+</main>
+<script>
+(() => {
+  const btn = document.querySelector('[data-theme-toggle]');
+  const root = document.documentElement;
+  let theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  root.setAttribute('data-theme', theme);
+  btn.textContent = theme === 'dark' ? '☀️' : '🌙';
+  btn.addEventListener('click', () => {
+    theme = theme === 'dark' ? 'light' : 'dark';
+    root.setAttribute('data-theme', theme);
+    btn.textContent = theme === 'dark' ? '☀️' : '🌙';
+  });
+})();
+</script>
+</body>
+</html>
